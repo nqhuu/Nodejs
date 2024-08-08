@@ -4,16 +4,19 @@ import bodyParser from "body-parser";
 import viewEngine from "./config/viewEngine";
 import initWebRoutes from "./route/web"
 require('dotenv').config();
+import connectDB from "./config/connectDB";
 
 let app = express();
 
 // config app
-
+// config req.body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
-viewEngine(app);
-initWebRoutes(app);
+viewEngine(app); // chạy ứng dụng với viewEngine đk set bên "./config/viewEngine"
+initWebRoutes(app); // chạy đến các viewEnginecác route đk cấu hình trong initWebRoutes from "./route/web"
+
+connectDB();
 
 let port = process.env.PORT || 8000;
 // PORT === undefined => PORT = 8000;
