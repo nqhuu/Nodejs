@@ -14,9 +14,14 @@ module.exports = (sequelize, DataTypes) => {
 
   // Phương thức init được sử dụng để khởi tạo mô hình User với các thuộc tính và tùy chọn.
   User.init({
+    email: DataTypes.STRING,
+    password: DataTypes.STRING,
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
-    email: DataTypes.STRING
+    address: DataTypes.STRING,
+    gender: DataTypes.BOOLEAN,
+    typeRole: DataTypes.STRING,
+    keyRole: DataTypes.STRING,
   }, {
     // Đối tượng sequelize được truyền vào để liên kết mô hình này với kết nối cơ sở dữ liệu.
     sequelize,
