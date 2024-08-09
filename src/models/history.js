@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         patientId: DataTypes.INTEGER,
         doctorId: DataTypes.INTEGER,
         description: DataTypes.TEXT,
+        files: DataTypes.TEXT,
     }, {
         // Đối tượng sequelize được truyền vào để liên kết mô hình này với kết nối cơ sở dữ liệu.
         sequelize,

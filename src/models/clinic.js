@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 
     // Phương thức init được sử dụng để khởi tạo mô hình Clinic với các thuộc tính và tùy chọn.
     Clinic.init({
+        name: DataTypes.STRING,
         address: DataTypes.STRING,
         description: DataTypes.STRING,
         image: DataTypes.STRING,

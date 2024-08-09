@@ -20,8 +20,10 @@ module.exports = (sequelize, DataTypes) => {
     lastName: DataTypes.STRING,
     address: DataTypes.STRING,
     gender: DataTypes.BOOLEAN,
-    typeRole: DataTypes.STRING,
-    keyRole: DataTypes.STRING,
+    roleId: DataTypes.STRING,
+    image: DataTypes.STRING,
+    phonenumber: DataTypes.STRING,
+    positionId: DataTypes.STRING,
   }, {
     // Đối tượng sequelize được truyền vào để liên kết mô hình này với kết nối cơ sở dữ liệu.
     sequelize,
