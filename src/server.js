@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
 viewEngine(app); // chạy ứng dụng với viewEngine đk set bên "./config/viewEngine"
-initWebRoutes(app); // chạy đến các viewEnginecác route đk cấu hình trong initWebRoutes from "./route/web"
+initWebRoutes(app); // chạy đến các viewEngine các route đk cấu hình trong initWebRoutes from "./route/web"
 
 connectDB();
 
