@@ -1,6 +1,15 @@
-let handleLogin = (req, res) => {
+
+import userService from "../services/userService"
+import bcrypt from 'bcryptjs' // thư viện hash password
+
+//hàm chịu trách nhiệm tra về dữ liệu cho FE
+
+let handleLogin = async (req, res) => {
+    // lấy dữ liệu nhập vào của FE
     let email = req.body.email;
     let password = req.body.password;
+
+    // nếu 1 trong 2 trường này không tồn tại thì tra về obj với các trường ... và kết thúc
     if (!email || !password) {
         return res.status(500).json({
             errCode: 1,
@@ -8,16 +17,31 @@ let handleLogin = (req, res) => {
         })
     }
 
-    let user
+    // nếu if trên === false thì chạy tiếp : lấy dữ liệu khi FE nhập đủ các trường yêu cầu, hàm xử lý này bên userService.handeleUserLogin
+    let userData = await userService.handeleUserLogin(email, password);
+
+
     // check tồn tại email
     // compare password
     // return user Infor
     // access_token: JWT Json web token
+
+
+    // trả về obj userData về cho FE với các điều kiện được code ở bên userService
     return res.status(200).json({
-        errCode: 0,
-        message: 'hello',
-        email: email,
-        password: password
+        errCode: userData.errCode,
+        message: userData.errMessage,
+        user: userData.user ? userData.user : {},
+    })
+}
+
+let compareUserPassword = () => {
+    return new Promise((resolve, reject) => {
+        try {
+
+        } catch (e) {
+            reject(e)
+        }
     })
 }
 

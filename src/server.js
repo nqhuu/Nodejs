@@ -5,8 +5,12 @@ import viewEngine from "./config/viewEngine";
 import initWebRoutes from "./route/web"
 require('dotenv').config();
 import connectDB from "./config/connectDB";
+import cors from "cors";
 
 let app = express();
+// app.use(cors({ origin: true })); // frontend của bạn
+app.use(cors({ credentials: true, origin: true }));
+
 
 // config app
 // config req.body
