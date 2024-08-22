@@ -1,3 +1,5 @@
+// lấy dữ liệu từ phía db với các tham số được truyên vào từ các modul khác
+
 import { where } from "sequelize";
 import db from "../models/index"
 import bcrypt from 'bcryptjs' // thư viện hash password
@@ -80,7 +82,63 @@ let checkUserEmail = (userEmail) => {
     })
 }
 
+// let getAllUsers = (userId) => {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             let users = '';
+//             if (userId === 'ALL') {
+//                 users = await db.User.findAll({
+//                     attributes: {
+//                         exclude: ['password']
+//                     }
+//                 })
+//             }
+//             if (userId && userId !== 'ALL') {
+//                 users = await db.User.findOne({
+//                     where: { id: userId },
+//                     attributes: {
+//                         exclude: ['password']
+//                     }
+//                 })
+//             }
+//             console.log(users)
+//             resolve(users)
+//         } catch (e) {
+//             reject(e)
+//         }
+//     })
+// }
+
+let getAllUsers = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let users = '';
+            if (userId) {
+                if (userId === 'ALL') {
+                    users = await db.User.findAll({
+                        attributes: {
+                            exclude: ['password']
+                        }
+                    })
+                }
+                if (userId !== 'ALL') {
+                    users = await db.User.findOne({
+                        where: { id: userId },
+                        attributes: {
+                            exclude: ['password']
+                        }
+                    })
+                }
+            }
+            resolve(users)
+
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 
 module.exports = {
     handeleUserLogin: handeleUserLogin,
+    getAllUsers: getAllUsers,
 }

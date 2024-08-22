@@ -1,8 +1,8 @@
+//hàm chịu trách nhiệm trả về dữ liệu cho FE
 
 import userService from "../services/userService"
 import bcrypt from 'bcryptjs' // thư viện hash password
 
-//hàm chịu trách nhiệm tra về dữ liệu cho FE
 
 let handleLogin = async (req, res) => {
     // lấy dữ liệu nhập vào của FE
@@ -35,6 +35,51 @@ let handleLogin = async (req, res) => {
     })
 }
 
+// let handleGetAllUsers = async (req, res) => {
+//     let id = req.body.id; // ALL, id
+//     if (!id) {
+//         return res.status(200).json({
+//             errCode: 1,
+//             errMessage: 'Missing required parameters',
+//             users: []
+//         })
+//     }
+
+//     let users = await userService.getAllUsers(id);
+
+//     return res.status(200).json({
+//         errCode: 0,
+//         errMessage: 'OK',
+//         users
+//     })
+// }
+
+let handleGetAllUsers = async (req, res) => {
+    let id = req.body.id
+    if (!id) {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: 'missing',
+            users: []
+        })
+    }
+    let users = await userService.getAllUsers(id)
+
+    if (users === null) {
+        return res.status(200).json({
+            errCode: 2,
+            errMessage: 'user không tồn tại',
+            users: []
+        })
+    }
+
+    return res.status(200).json({
+        errCode: 0,
+        errMessage: 'OK',
+        users
+    })
+}
+
 let compareUserPassword = () => {
     return new Promise((resolve, reject) => {
         try {
@@ -46,5 +91,6 @@ let compareUserPassword = () => {
 }
 
 module.exports = {
-    handleLogin: handleLogin
+    handleLogin: handleLogin,
+    handleGetAllUsers: handleGetAllUsers
 }

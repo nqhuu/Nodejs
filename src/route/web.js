@@ -1,10 +1,13 @@
+// file chịu trách nhiệm luân chuyển các route
+
+
 import express from "express";
 import homeController from "../controllers/homeController";
 import userController from "../controllers/userController";
+import { render } from "ejs";
 
 let router = express.Router();
 
-// file chịu trách nhiệm luân chuyển các route
 
 let initWebRoutes = (app) => {
     router.get('/', homeController.getHomePage);
@@ -19,6 +22,8 @@ let initWebRoutes = (app) => {
 
     router.post('/api/login', userController.handleLogin);
 
+    // router.get('/api/get-all-users', userController.handleGetAllUsers)
+    router.get('/api/get-all-users', userController.handleGetAllUsers)
 
     // router.get('/halo', (req, res) => {
     //     return res.send('hello express')
