@@ -4,6 +4,19 @@ import { where } from "sequelize";
 import db from "../models/index"
 import bcrypt from 'bcryptjs' // thư viện hash password
 
+const salt = bcrypt.genSaltSync(10);
+
+//hàm xử lý hash password
+let hashUserPassword = (password) => {
+    return new Promise(async (resole, reject) => {
+        try {
+            var hashPassword = await bcrypt.hashSync(password, salt);
+            resole(hashPassword);
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 
 //hàm xử lý check login
 let handeleUserLogin = (userEmail, password) => {
@@ -138,7 +151,100 @@ let getAllUsers = (userId) => {
     })
 }
 
+let createNewUser = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            //check sự tồn tại của email
+            let check = await checkUserEmail(data.email);
+            if (check) {
+                resolve({
+                    errCode: 1,
+                    message: 'email đã đươc sử dụng'
+                })
+            } else {
+                let hashPasswordFromVcrypt = await hashUserPassword(data.password)
+                await db.User.create({
+                    email: data.email,
+                    password: hashPasswordFromVcrypt,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    address: data.address,
+                    gender: data.gender === '1' ? true : false,
+                    roleId: data.roleId,
+                    phonenumber: data.phonenumber,
+                })
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'OK'
+                }); // tương đương với return
+
+            }
+
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+let deleteUser = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        let user = await db.User.findOne({
+            where: { id: userId }
+        })
+        if (!user) {
+            resolve({
+                errCode: 2,
+                errMessage: 'Người dùng không tồn tại'
+            })
+        } else {
+            await db.User.destroy({
+                where: { id: userId }
+            }); // thực hiện xáo user với hamg destroy
+            resolve({
+                errCode: 0,
+                errMessage: 'xóa thành công'
+            })
+        }
+    })
+}
+
+let editUser = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: { id: data.id },
+                raw: false
+            })
+
+            if (user) {
+
+                user.firstName = data.firstName;
+                user.lastName = data.lastName;
+                user.address = data.address;
+
+                await user.save();
+
+                resolve({
+                    errCode: 0,
+                    errMessage: `Cập nhật thành công cho tài khoản có email là : ${user.email}`
+                })
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'user không tồn tại'
+                })
+            }
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     handeleUserLogin: handeleUserLogin,
     getAllUsers: getAllUsers,
+    createNewUser: createNewUser,
+    deleteUser: deleteUser,
+    editUser: editUser
 }

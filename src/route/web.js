@@ -24,6 +24,9 @@ let initWebRoutes = (app) => {
 
     // router.get('/api/get-all-users', userController.handleGetAllUsers)
     router.get('/api/get-all-users', userController.handleGetAllUsers)
+    router.post('/api/create-new-user', userController.handleCreatNewUser);
+    router.put('/api/edit-user', userController.handleEditUser);
+    router.delete('/api/delete-user', userController.handleDeleteUser);
 
     // router.get('/halo', (req, res) => {
     //     return res.send('hello express')
@@ -33,4 +36,4 @@ let initWebRoutes = (app) => {
     return app.use("/", router)
 }
 
-module.exports = initWebRoutes;
+module.exports = initWebRoutes; 

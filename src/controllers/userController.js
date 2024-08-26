@@ -55,7 +55,7 @@ let handleLogin = async (req, res) => {
 // }
 
 let handleGetAllUsers = async (req, res) => {
-    let id = req.body.id
+    let id = req.query.id
     if (!id) {
         return res.status(200).json({
             errCode: 1,
@@ -80,6 +80,35 @@ let handleGetAllUsers = async (req, res) => {
     })
 }
 
+// thêm users
+let handleCreatNewUser = async (req, res) => {
+    let message = await userService.createNewUser(req.body);
+    console.log(message)
+    return res.status(200).json(message);
+}
+
+let handleEditUser = async (req, res) => {
+    if (!req.body.id) {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: 'Không xác định được user (id) cần sửa'
+        })
+    }
+    let message = userService.editUser(req.body);
+    return res.status(200).json(message)
+}
+
+let handleDeleteUser = async (req, res) => {
+    if (!req.body.id) {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: 'chưa xác định được user (id) cần xóa'
+        })
+    }
+    let message = await userService.deleteUser(req.body);
+    return res.status(200).json(message);
+}
+
 let compareUserPassword = () => {
     return new Promise((resolve, reject) => {
         try {
@@ -92,5 +121,8 @@ let compareUserPassword = () => {
 
 module.exports = {
     handleLogin: handleLogin,
-    handleGetAllUsers: handleGetAllUsers
+    handleGetAllUsers: handleGetAllUsers,
+    handleCreatNewUser: handleCreatNewUser,
+    handleEditUser: handleEditUser,
+    handleDeleteUser: handleDeleteUser,
 }
