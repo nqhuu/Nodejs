@@ -94,7 +94,7 @@ let handleEditUser = async (req, res) => {
             errMessage: 'Không xác định được user (id) cần sửa'
         })
     }
-    let message = userService.editUser(req.body);
+    let message = await userService.updateUserData(req.body);
     return res.status(200).json(message)
 }
 
@@ -105,7 +105,7 @@ let handleDeleteUser = async (req, res) => {
             errMessage: 'chưa xác định được user (id) cần xóa'
         })
     }
-    let message = await userService.deleteUser(req.body);
+    let message = await userService.deleteUser(req.body.id);
     return res.status(200).json(message);
 }
 

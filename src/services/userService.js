@@ -209,7 +209,7 @@ let deleteUser = (userId) => {
     })
 }
 
-let editUser = (data) => {
+let updateUserData = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let user = await db.User.findOne({
@@ -217,14 +217,18 @@ let editUser = (data) => {
                 raw: false
             })
 
+            // gán lại giá trị cho từng thuộc tính của user với data được tuyền vào từ 
+            // userController.handleEditUser
             if (user) {
 
                 user.firstName = data.firstName;
                 user.lastName = data.lastName;
                 user.address = data.address;
 
+                // thực hiện cập nhật dữ liệu vào db
                 await user.save();
 
+                //trả về thông báo thành công
                 resolve({
                     errCode: 0,
                     errMessage: `Cập nhật thành công cho tài khoản có email là : ${user.email}`
@@ -246,5 +250,5 @@ module.exports = {
     getAllUsers: getAllUsers,
     createNewUser: createNewUser,
     deleteUser: deleteUser,
-    editUser: editUser
+    updateUserData: updateUserData
 }
