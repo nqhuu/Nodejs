@@ -99,151 +99,237 @@ let checkUserEmail = (userEmail) => {
 //     return new Promise(async (resolve, reject) => {
 //         try {
 //             let users = '';
-//             if (userId === 'ALL') {
-//                 users = await db.User.findAll({
-//                     attributes: {
-//                         exclude: ['password']
-//                     }
-//                 })
+//             if (userId) {
+//                 if (userId === 'ALL') {
+//                     users = await db.User.findAll({
+//                         attributes: {
+//                             exclude: ['password']
+//                         }
+//                     })
+//                 }
+//                 if (userId !== 'ALL') {
+//                     users = await db.User.findOne({
+//                         where: { id: userId },
+//                         attributes: {
+//                             exclude: ['password']
+//                         }
+//                     })
+//                 }
 //             }
-//             if (userId && userId !== 'ALL') {
-//                 users = await db.User.findOne({
-//                     where: { id: userId },
-//                     attributes: {
-//                         exclude: ['password']
-//                     }
-//                 })
-//             }
-//             console.log(users)
 //             resolve(users)
+
 //         } catch (e) {
 //             reject(e)
 //         }
 //     })
 // }
 
-let getAllUsers = (userId) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let users = '';
-            if (userId) {
-                if (userId === 'ALL') {
-                    users = await db.User.findAll({
-                        attributes: {
-                            exclude: ['password']
-                        }
-                    })
-                }
-                if (userId !== 'ALL') {
-                    users = await db.User.findOne({
-                        where: { id: userId },
-                        attributes: {
-                            exclude: ['password']
-                        }
-                    })
-                }
+let getAllUsers = async (userId) => {
+    try {
+        let users = ''
+        if (userId) {
+            if (userId === 'ALL') {
+                users = await db.User.findAll({
+                    attributes: {
+                        exclude: ['password']
+                    }
+                })
+                return users
             }
-            resolve(users)
-
-        } catch (e) {
-            reject(e)
+            if (userId !== 'ALL') {
+                users = await db.User.findOne({
+                    where: { id: userId },
+                    attributes: {
+                        exclude: ['password']
+                    }
+                })
+                return users
+            }
         }
-    })
+    } catch (e) {
+        return (e)
+    }
 }
 
-let createNewUser = (data) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            //check sự tồn tại của email
-            let check = await checkUserEmail(data.email);
-            if (check) {
-                resolve({
-                    errCode: 1,
-                    message: 'email đã đươc sử dụng'
-                })
-            } else {
-                let hashPasswordFromVcrypt = await hashUserPassword(data.password)
-                await db.User.create({
-                    email: data.email,
-                    password: hashPasswordFromVcrypt,
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    address: data.address,
-                    gender: data.gender === '1' ? true : false,
-                    roleId: data.roleId,
-                    phonenumber: data.phonenumber,
-                })
+// let createNewUser = (data) => {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             //check sự tồn tại của email
+//             let check = await checkUserEmail(data.email);
+//             if (check) {
+//                 resolve({
+//                     errCode: 1,
+//                     message: 'email đã đươc sử dụng'
+//                 })
+//             } else {
+//                 let hashPasswordFromVcrypt = await hashUserPassword(data.password)
+//                 await db.User.create({
+//                     email: data.email,
+//                     password: hashPasswordFromVcrypt,
+//                     firstName: data.firstName,
+//                     lastName: data.lastName,
+//                     address: data.address,
+//                     gender: data.gender === '1' ? true : false,
+//                     roleId: data.roleId,
+//                     phonenumber: data.phonenumber,
+//                 })
 
-                resolve({
-                    errCode: 0,
-                    errMessage: 'OK'
-                }); // tương đương với return
+//                 resolve({
+//                     errCode: 0,
+//                     errMessage: 'OK'
+//                 }); // tương đương với return
 
-            }
+//             }
 
-        } catch (e) {
-            reject(e)
+//         } catch (e) {
+//             reject(e)
+//         }
+//     })
+// }
+
+let createNewUser = async (data) => {
+    try {
+        let checkEmail = await checkUserEmail(data.email)
+        if (checkEmail) {
+            return ({
+                errCode: 1,
+                errMessage: 'Email đã tồn tại, vui lòng nhập email mới'
+            })
+        } else {
+            let hashPasswordFromVcrypt = await hashUserPassword(data.password)
+            await db.User.create({
+                email: data.email,
+                password: hashPasswordFromVcrypt,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                address: data.address,
+                gender: data.gender === '1' ? true : false,
+                roleId: data.roleId,
+                phonenumber: data.phonenumber,
+            })
+            return ({
+                errCode: 0,
+                errMessage: 'Tạo tài khoản thành công'
+            })
         }
-    })
+    } catch (e) {
+        return (e)
+    }
 }
 
-let deleteUser = (userId) => {
-    return new Promise(async (resolve, reject) => {
+// let deleteUser = (userId) => {
+//     return new Promise(async (resolve, reject) => {
+//         let user = await db.User.findOne({
+//             where: { id: userId }
+//         })
+//         if (!user) {
+//             resolve({
+//                 errCode: 2,
+//                 errMessage: 'Người dùng không tồn tại'
+//             })
+//         } else {
+//             await db.User.destroy({
+//                 where: { id: userId }
+//             }); // thực hiện xáo user với hamg destroy
+//             resolve({
+//                 errCode: 0,
+//                 errMessage: 'xóa thành công'
+//             })
+//         }
+//     })
+// }
+
+let deleteUser = async (userId) => {
+    try {
         let user = await db.User.findOne({
             where: { id: userId }
         })
-        if (!user) {
-            resolve({
-                errCode: 2,
-                errMessage: 'Người dùng không tồn tại'
-            })
-        } else {
+        if (user) {
             await db.User.destroy({
                 where: { id: userId }
-            }); // thực hiện xáo user với hamg destroy
-            resolve({
+            })
+            return ({
                 errCode: 0,
-                errMessage: 'xóa thành công'
+                errMessage: `xóa thành công user: ${user.email}`
+            })
+        } else {
+            return ({
+                errCode: 2,
+                errMessage: `Không tìm thấy user`
             })
         }
-    })
+    } catch (e) {
+        return (e)
+    }
 }
 
-let updateUserData = (data) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let user = await db.User.findOne({
-                where: { id: data.id },
-                raw: false
+// let updateUserData = (data) => {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             let user = await db.User.findOne({
+//                 where: { id: data.id },
+//                 raw: false
+//             })
+
+//             // gán lại giá trị cho từng thuộc tính của user với data được tuyền vào từ 
+//             // userController.handleEditUser
+//             if (user) {
+
+//                 user.firstName = data.firstName;
+//                 user.lastName = data.lastName;
+//                 user.address = data.address;
+
+//                 // thực hiện cập nhật dữ liệu vào db
+//                 await user.save();
+
+//                 //trả về thông báo thành công
+//                 resolve({
+//                     errCode: 0,
+//                     errMessage: `Cập nhật thành công cho tài khoản có email là : ${user.email}`
+//                 })
+//             } else {
+//                 resolve({
+//                     errCode: 1,
+//                     errMessage: 'user không tồn tại'
+//                 })
+//             }
+//         } catch (e) {
+//             reject(e)
+//         }
+//     })
+// }
+
+let updateUserData = async (data) => {
+    try {
+        let userId = await data.id
+        let user = await db.User.findOne({
+            where: { id: userId },
+            raw: false
+        })
+        if (user) {
+            user.firstName = data.firstName;
+            user.lastName = data.lastName;
+            user.address = data.address;
+            user.phonenumber = data.phonenumber;
+            user.roleId = data.roleId;
+            user.sex = data.sex;
+
+            await user.save()
+            return ({
+                errCode: 0,
+                errMessage: 'Chỉnh sửa user thành công'
             })
-
-            // gán lại giá trị cho từng thuộc tính của user với data được tuyền vào từ 
-            // userController.handleEditUser
-            if (user) {
-
-                user.firstName = data.firstName;
-                user.lastName = data.lastName;
-                user.address = data.address;
-
-                // thực hiện cập nhật dữ liệu vào db
-                await user.save();
-
-                //trả về thông báo thành công
-                resolve({
-                    errCode: 0,
-                    errMessage: `Cập nhật thành công cho tài khoản có email là : ${user.email}`
-                })
-            } else {
-                resolve({
-                    errCode: 1,
-                    errMessage: 'user không tồn tại'
-                })
-            }
-        } catch (e) {
-            reject(e)
+        } else {
+            return ({
+                errCode: 1,
+                errMessage: 'Không thể chỉnh sửa user'
+            })
         }
-    })
+    } catch (e) {
+        return e
+    }
 }
+
 
 module.exports = {
     handeleUserLogin: handeleUserLogin,
