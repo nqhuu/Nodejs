@@ -130,11 +130,13 @@ let handleCreatNewUser = async (req, res) => {
 
 let handleEditUser = async (req, res) => {
     let data = req.body
-    let message = await userService.updateUserData(data)
-    if (!data.id) {
+    // console.log('data edit BE: ', data)
+    let message = await userService.updateUserData(data.editUser)
+    // console.log(data.editUser)
+    if (!data.editUser.id) {
         return res.status(200).json({
             errCode: 1,
-            errMessage: 'user không tồn tại'
+            errMessage: 'user không tồn tại controller'
         })
 
     }
@@ -155,7 +157,7 @@ let handleEditUser = async (req, res) => {
 
 let handleDeleteUser = async (req, res) => {
     let userId = req.body.id;
-    console.log('userService 158', userId)
+    // console.log('userService 158', userId) 
     if (userId) {
         let message = await userService.deleteUser(userId);
         return res.status(200).json(message)

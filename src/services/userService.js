@@ -306,13 +306,14 @@ let updateUserData = async (data) => {
             where: { id: userId },
             raw: false
         })
+        console.log(user)
         if (user) {
             user.firstName = data.firstName;
             user.lastName = data.lastName;
             user.address = data.address;
             user.phonenumber = data.phonenumber;
             user.roleId = data.roleId;
-            user.sex = data.sex;
+            user.gender = data.gender;
 
             await user.save()
             return ({
