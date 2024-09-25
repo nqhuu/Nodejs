@@ -27,6 +27,7 @@ let initWebRoutes = (app) => {
     router.post('/api/create-new-user', userController.handleCreatNewUser);
     router.put('/api/edit-user', userController.handleEditUser);
     router.delete('/api/delete-user', userController.handleDeleteUser);
+    router.get('/allcodes', userController.getAllCode)
 
     // router.get('/halo', (req, res) => {
     //     return res.send('hello express')

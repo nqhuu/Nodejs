@@ -190,6 +190,7 @@ let getAllUsers = async (userId) => {
 let createNewUser = async (data) => {
     try {
         let checkEmail = await checkUserEmail(data.email)
+        // console.log(data)
         if (checkEmail) {
             return ({
                 errCode: 1,
@@ -307,6 +308,7 @@ let updateUserData = async (data) => {
             raw: false
         })
         console.log(user)
+        console.log(data)
         if (user) {
             user.firstName = data.firstName;
             user.lastName = data.lastName;
@@ -331,11 +333,35 @@ let updateUserData = async (data) => {
     }
 }
 
+let getAllCodeService = (typeInput) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!typeInput) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'missing'
+                })
+            } else {
+                let res = {};
+                let allcode = await db.Allcode.findAll({
+                    where: { type: typeInput }
+                });
+                res.errCode = 0;
+                res.data = allcode
+                resolve(res)
+            }
+
+        } catch (e) {
+
+        }
+    })
+}
 
 module.exports = {
     handeleUserLogin: handeleUserLogin,
     getAllUsers: getAllUsers,
     createNewUser: createNewUser,
     deleteUser: deleteUser,
-    updateUserData: updateUserData
+    updateUserData: updateUserData,
+    getAllCodeService: getAllCodeService,
 }

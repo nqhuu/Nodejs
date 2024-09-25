@@ -181,10 +181,24 @@ let compareUserPassword = () => {
     })
 }
 
+let getAllCode = async (req, res) => {
+    try {
+        let data = await userService.getAllCodeService(req.query.type);
+        return res.status(200).json(data);
+    } catch (e) {
+        console.log('error from server', e)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'error from server'
+        })
+    }
+}
+
 module.exports = {
     handleLogin: handleLogin,
     handleGetAllUsers: handleGetAllUsers,
     handleCreatNewUser: handleCreatNewUser,
     handleEditUser: handleEditUser,
     handleDeleteUser: handleDeleteUser,
+    getAllCode: getAllCode,
 }
