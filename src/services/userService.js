@@ -36,7 +36,7 @@ let handeleUserLogin = (userEmail, password) => {
                 // findOne sẽ trả về bản ghi đầu tiên khớp với điều kiện where, hoặc null nếu không tìm thấy bản ghi nào.
                 let user = await db.User.findOne({
                     where: { email: userEmail },
-                    attributes: ['email', 'roleId', 'password'], //chỉ lấy các trường này, phải lấy thêm password để check dưới hàm if
+                    attributes: ['email', 'roleId', 'firstName', 'lastName', 'password'], //chỉ lấy các trường này, phải lấy thêm password để check dưới hàm if
                     raw: true, //Trả về kết quả dưới dạng đối tượng JavaScript thuần túy (không phải là một đối tượng phức tạp của Sequelize).
                 });
 
