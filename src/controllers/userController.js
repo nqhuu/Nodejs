@@ -107,6 +107,7 @@ let handleGetAllUsers = async (req, res) => {
 
 let handleCreatNewUser = async (req, res) => {
     let data = req.body
+    console.log(data)
     if (!data.email) {
         return res.status(200).json({
             errCode: 2,

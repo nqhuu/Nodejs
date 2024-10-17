@@ -204,9 +204,10 @@ let createNewUser = async (data) => {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 address: data.address,
-                gender: data.gender === '1' ? true : false,
+                gender: data.gender,
                 roleId: data.roleId,
                 phonenumber: data.phonenumber,
+                positionId: data.positionId,
             })
             return ({
                 errCode: 0,
@@ -316,6 +317,7 @@ let updateUserData = async (data) => {
             user.phonenumber = data.phonenumber;
             user.roleId = data.roleId;
             user.gender = data.gender;
+            user.positionId = data.positionId;
 
             await user.save()
             return ({
