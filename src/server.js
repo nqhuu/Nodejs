@@ -14,8 +14,10 @@ app.use(cors({ credentials: true, origin: true }));
 
 // config app
 // config req.body
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 
 viewEngine(app); // chạy ứng dụng với viewEngine đk set bên "./config/viewEngine"
 initWebRoutes(app); // chạy đến các viewEngine các route đk cấu hình trong initWebRoutes from "./route/web"

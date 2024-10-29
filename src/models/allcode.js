@@ -7,14 +7,16 @@ module.exports = (sequelize, DataTypes) => {
          * This method is not a part of Sequelize lifecycle.
          * The `models/index` file will call this method automatically.
          */
-        static associate(models) {
+        static associate(models) { // Mối Quan Hệ
             // define association here
+            Allcode.hasMany(models.User, { foreignKey: 'positionId', as: 'positionData' })
+            Allcode.hasMany(models.User, { foreignKey: 'gender', as: 'genderData' })
         }
     };
 
     // Phương thức init được sử dụng để khởi tạo mô hình User với các thuộc tính và tùy chọn.
     Allcode.init({
-        key: DataTypes.STRING,
+        keyMap: DataTypes.STRING,
         type: DataTypes.STRING,
         valueEn: DataTypes.STRING,
         valueVi: DataTypes.STRING,

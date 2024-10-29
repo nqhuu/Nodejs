@@ -208,6 +208,7 @@ let createNewUser = async (data) => {
                 roleId: data.roleId,
                 phonenumber: data.phonenumber,
                 positionId: data.positionId,
+                image: data.avatar,
             })
             return ({
                 errCode: 0,
@@ -308,27 +309,53 @@ let updateUserData = async (data) => {
             where: { id: userId },
             raw: false
         })
-        console.log(user)
-        console.log(data)
+        // console.log(user)
+        // console.log(data)
         if (user) {
-            user.firstName = data.firstName;
-            user.lastName = data.lastName;
-            user.address = data.address;
-            user.phonenumber = data.phonenumber;
-            user.roleId = data.roleId;
-            user.gender = data.gender;
-            user.positionId = data.positionId;
+            if (user.firstName !== data.firstName ||
+                user.lastName !== data.lastName ||
+                user.address !== data.address ||
+                user.phonenumber !== data.phonenumber ||
+                user.roleId !== data.roleId ||
+                user.gender !== data.gender ||
+                user.positionId !== data.positionId
+                // ||(user.image !== data.avatar && data.avatar !== '')
+            ) {
+                user.firstName = data.firstName;
+                user.lastName = data.lastName;
+                user.address = data.address;
+                user.phonenumber = data.phonenumber;
+                user.roleId = data.roleId;
+                user.gender = data.gender;
+                user.positionId = data.positionId;
+                if (data.avatar) {
+                    user.image = data.avatar;
+                }
 
-            await user.save()
-            return ({
-                errCode: 0,
-                errMessage: 'Chỉnh sửa user thành công'
-            })
-        } else {
-            return ({
-                errCode: 1,
-                errMessage: 'Không thể chỉnh sửa user'
-            })
+                await user.save()
+                return ({
+                    errCode: 0,
+                    errMessage: 'Chỉnh sửa user thành công'
+                })
+            } else if (user.firstName === data.firstName &&
+                user.lastName === data.lastName &&
+                user.address === data.address &&
+                user.phonenumber === data.phonenumber &&
+                user.roleId === data.roleId &&
+                user.gender === data.gender &&
+                user.positionId === data.positionId
+                //&& user.image === data.avatar
+            ) {
+                return ({
+                    errCode: 1,
+                    errMessage: 'Không có chỉnh sửa user'
+                })
+            } else {
+                return ({
+                    errCode: 2,
+                    errMessage: 'Không thể chỉnh sửa user'
+                })
+            }
         }
     } catch (e) {
         return e
