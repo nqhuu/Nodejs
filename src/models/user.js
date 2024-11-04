@@ -8,9 +8,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // define association here 
+      // lấy dữ liệu quan hệ ở bảng Allcode với khóa ngoại (foreignKey) trong bảng User quan hệ với khóa chính (targetKey) trong bảng Allcode (foreignKey targetKey có cùng giá trị)
       User.belongsTo(models.Allcode, { foreignKey: 'positionId', targetKey: 'keyMap', as: 'positionData' })
       User.belongsTo(models.Allcode, { foreignKey: 'gender', targetKey: 'keyMap', as: 'genderData' })
+      User.belongsTo(models.Allcode, { foreignKey: 'roleId', targetKey: 'keyMap', as: 'doctorData' })
+      User.hasOne(models.Markdown, { foreignKey: 'doctorId' })
     }
   };
 

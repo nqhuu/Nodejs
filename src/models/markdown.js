@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            // tạo quan hệ (liên kết) với các bảng khác
+            Markdown.belongsTo(models.User, { foreignKey: 'doctorId' })
         }
     };
 
