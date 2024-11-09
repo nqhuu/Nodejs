@@ -34,18 +34,27 @@ let getAllDoctor = async (req, res) => {
 
 let postInforDoctor = async (req, res) => {
     try {
-        let idDoctor = req.body.doctorId;
-        let AllDr = await doctorService.getAllInforDoctorService()
-        let idAllDoctor = AllDr.data.map((item, index) => {
-            return item.doctorId
-        })
-        if (req.body && !idAllDoctor.includes(idDoctor)) {
+        // let idDoctor = req.body.doctorId;
+        // let AllDr = await doctorService.getAllInforDoctorService()
+        // let idAllDoctor = AllDr.data.map((item, index) => {
+        //     return item.doctorId
+        // })
+        // if (req.body && !idAllDoctor.includes(idDoctor)) {
+        //     let response = await doctorService.saveDetailInforDoctor(req.body);
+        //     return res.status(200).json(response)
+        // } else {
+        //     return res.status(200).json({
+        //         errCode: -2,
+        //         errMessage: 'Thông tin bác sĩ đã được tạo trước đó, bạn cần update nếu muốn chỉnh sửa lại thông tin bác sĩ'
+        //     })
+        // }
+        if (req.body) {
             let response = await doctorService.saveDetailInforDoctor(req.body);
             return res.status(200).json(response)
         } else {
             return res.status(200).json({
-                errCode: -2,
-                errMessage: 'Thông tin bác sĩ đã được tạo trước đó, bạn cần update nếu muốn chỉnh sửa lại thông tin bác sĩ'
+                errCode: -1,
+                errMessage: 'error from server'
             })
         }
     } catch (e) {

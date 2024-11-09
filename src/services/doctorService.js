@@ -55,8 +55,9 @@ let getAllDoctorService = async () => {
 }
 
 let saveDetailInforDoctor = async (data) => {
+    // console.log('saveDetailInforDoctor', data)
     try {
-        if (data.doctorId && data.contentHTML && data.contentMarkdown && data.description) {
+        if (!data.hasOldData && data.doctorId && data.contentHTML && data.contentMarkdown && data.description) {
             await db.Markdown.create({
                 contentHTML: data.contentHTML,
                 contentMarkdown: data.contentMarkdown,
@@ -69,16 +70,33 @@ let saveDetailInforDoctor = async (data) => {
                 errCode: 0,
                 errMessage: 'Bổ sung thông tin thành công'
             })
-        } else {
-            return ({
-                errCode: 1,
-                errMessage: 'Nhập đủ thông tin các trường'
+        }
+        if (data.hasOldData && data.doctorId && data.contentHTML && data.contentMarkdown && data.description) {
+            let doctor = await db.Markdown.findOne({
+                where: {
+                    doctorId: data.doctorId,
+                },
+                raw: false // phải để raw là false thì mới đưa dữ liệu về kiểu object của sequelize thay vì object thông thường
             })
+            if (doctor) {
+                // console.log('Instance of Model:', doctor instanceof db.Markdown); // Kiểm tra xem doctor có phải instance không
+                doctor.contentHTML = data.contentHTML;
+                doctor.contentMarkdown = data.contentMarkdown;
+                doctor.description = data.description;
+                // doctor.specialtyId = data.specialtyId;
+                // doctor.clinicId = data.clinicId;
+                await doctor.save();
+                return ({
+                    errCode: 1,
+                    errMessage: 'Cập nhật thành công'
+                })
+            }
         }
     } catch (e) {
+        console.log('catch', e)
         return ({
             errCode: 2,
-            errMessage: 'Error from server'
+            errMessage: 'lỗi phía server Error from server'
         })
     }
 }
@@ -108,7 +126,7 @@ let getDetailDoctorByIdService = async (id) => {
             })
         } else {
 
-            console.log('getDetailDoctorByIdService', id)
+            // console.log('getDetailDoctorByIdService', id)
             let data = await db.User.findOne({
                 where: {
                     id: id
@@ -127,6 +145,10 @@ let getDetailDoctorByIdService = async (id) => {
                 raw: true,
                 nest: true,
             })
+            // if (data.image) {
+            //     data.image = Buffer(data.image, 'base64').toString('binary'); // chuyển đổi hình ảnh mã hóa từ base64 sang binary
+            // }
+            // console.log('getDetailDoctorByIdService', data)
             return ({
                 errCode: 0,
                 data: data
