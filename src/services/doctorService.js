@@ -2,6 +2,11 @@ import { cast, where } from "sequelize"
 import db from "../models/index"
 import { raw } from "body-parser"
 import allcode from "../models/allcode"
+require('dotenv').config();
+import _, { includes } from 'lodash'
+
+
+const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE;
 
 let getTopDoctorHomeService = (limit) => {
     return new Promise(async (resolve, reject) => {
@@ -132,22 +137,22 @@ let getDetailDoctorByIdService = async (id) => {
                     id: id
                 },
                 attributes: {
-                    exclude: ['password', 'image']
+                    exclude: ['password'] // không lấy trường password
                 },
-                include: [
+                include: [ //inclue để kêt hợp các bảng có quan hệ với bảng User
                     {
-                        model: db.Markdown, attributes: {
+                        model: db.Markdown, attributes: { //bảng Markdown có quan hệ với bảng User
                             exclude: ['specialtyId', 'clinicId', 'createdAt', 'updatedAt']
                         }
                     },
-                    { model: db.Allcode, as: 'doctorData' }
+                    { model: db.Allcode, as: 'doctorData' } //bảng Allcode có quan hệ với bảng User
                 ],
                 raw: true,
                 nest: true,
             })
-            // if (data.image) {
-            //     data.image = Buffer(data.image, 'base64').toString('binary'); // chuyển đổi hình ảnh mã hóa từ base64 sang binary
-            // }
+            if (data.image) {
+                data.image = Buffer(data.image, 'base64').toString('binary'); // chuyển đổi hình ảnh mã hóa từ base64 sang binary
+            }
             // console.log('getDetailDoctorByIdService', data)
             return ({
                 errCode: 0,
@@ -162,10 +167,87 @@ let getDetailDoctorByIdService = async (id) => {
     }
 }
 
+let bulkCreateSchedule = async (data) => {
+    let dataFormatdate = data.formatDate.toString()
+    // console.log('dataFormatdate', typeof dataFormatdate)
+    try {
+        if (!data && data.length !== 3) {
+            return ({
+                errCode: 2,
+                errMessage: 'Error from server : !data'
+            })
+        } else {
+            let dataSchedule = data.saveSchedule.map((item, index) => ({ ...item, maxNumber: MAX_NUMBER_SCHEDULE })) // thêm thuộc tính maxNumber cho mối obj của array data
+            if (dataSchedule, dataSchedule.length > 0) {
+                dataSchedule = dataSchedule.map((item, index) => ({ ...item, date: item.date.toString() }))
+            }
+            // console.log('dataSchedule', dataSchedule)
+
+            let dbSchedule = await db.Schedule.findAll({
+                where: {
+                    doctorId: data.doctorId,
+                    date: dataFormatdate,
+                },
+
+                attributes: ['timeType', 'date', 'doctorId', 'maxNumber']
+                // attributes: {
+                //     exclude: ['createdAt', 'updatedAt'] // không lấy trường ''
+                // },
+            })
+            if (!dbSchedule) dbSchedule = [];
+
+            // a đại diện cho từng phần tử của dataSchedule, b tương tự với dbSchedule, _.differenceWith của lodash trả về phần tử của mảng 1 không trùng với phần tử nào của mảng 2
+            let dataScheduleToDb = _.differenceWith(dataSchedule, dbSchedule, (a, b) => a.timeType === b.timeType && a.date === b.date)
+
+            // console.log('dataScheduleToDb', dataScheduleToDb)
+            await db.Schedule.bulkCreate(dataScheduleToDb); // create nhiều dòng data bằng bulkCreate sequelize
+
+            return ({
+                errCode: 0,
+                errMessage: 'Tạo lịch thành công'
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return ({
+            errCode: 1,
+            errMessage: 'Error from server: bulkCreateSchedule'
+        })
+    }
+}
+
+let getScheduleDoctorById = async (doctorId, date) => {
+    // console.log('getScheduleDoctorById service', doctorId, date)
+    try {
+        let scheduleDoctor = await db.Schedule.findAll({
+            where: {
+                doctorId: doctorId,
+                date: date
+            },
+            include: [
+                { model: db.Allcode, as: 'timeTypeData', attributes: ['valueEn', 'valueVi'] }
+            ],
+            raw: false,
+            nest: true
+            // include: [ //inclue để kêt hợp các bảng có quan hệ với bảng User
+            //     { model: db.Allcode, as: 'timeTypeData' } //bảng Allcode có quan hệ với bảng User
+            // ],
+        })
+        return ({
+            errCode: 0,
+            data: scheduleDoctor
+        })
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 module.exports = {
     getTopDoctorHomeService: getTopDoctorHomeService,
     getAllDoctorService: getAllDoctorService,
     saveDetailInforDoctor: saveDetailInforDoctor,
     getAllInforDoctorService: getAllInforDoctorService,
     getDetailDoctorByIdService: getDetailDoctorByIdService,
+    bulkCreateSchedule: bulkCreateSchedule,
+    getScheduleDoctorById: getScheduleDoctorById
 }

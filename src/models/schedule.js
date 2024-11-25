@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            // Mỗi Schedule thuộc về một Allcode thông qua timeType sử dụng timType của Schedule để map tới keyMap của Allcode
+            Schedule.belongsTo(models.Allcode, { foreignKey: 'timeType', targetKey: 'keyMap', as: 'timeTypeData' });
+
         }
     };
 
@@ -16,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     Schedule.init({
         currenNumber: DataTypes.INTEGER,
         maxNumber: DataTypes.INTEGER,
-        date: DataTypes.DATE,
+        date: DataTypes.STRING,
         timeType: DataTypes.STRING,
         doctorId: DataTypes.INTEGER,
     }, {

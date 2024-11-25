@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
             // define association here
             Allcode.hasMany(models.User, { foreignKey: 'positionId', as: 'positionData' })
             Allcode.hasMany(models.User, { foreignKey: 'gender', as: 'genderData' })
+            // Một Allcode có thể liên kết với nhiều Schedule thông qua keyMap
+            Allcode.hasMany(models.Schedule, { foreignKey: 'timeType', sourceKey: 'keyMap', as: 'scheduleData' });
+
         }
     };
 
