@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
             // Một Allcode có thể liên kết với nhiều Schedule thông qua keyMap
             Allcode.hasMany(models.Schedule, { foreignKey: 'timeType', sourceKey: 'keyMap', as: 'scheduleData' });
 
+            Allcode.hasMany(models.doctor_infor, { foreignKey: 'priceId', as: 'priceData' });
+            Allcode.hasMany(models.doctor_infor, { foreignKey: 'provinceId', as: 'provinceData' });
+            Allcode.hasMany(models.doctor_infor, { foreignKey: 'paymentId', as: 'paymentData' });
+
         }
     };
 

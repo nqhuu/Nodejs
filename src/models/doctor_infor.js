@@ -9,6 +9,12 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            doctor_infor.belongsTo(models.User, { foreignKey: 'doctorId', as: 'doctorInfor' })
+
+            doctor_infor.belongsTo(models.Allcode, { foreignKey: 'priceId', targetKey: 'keyMap', as: 'priceData' })
+            doctor_infor.belongsTo(models.Allcode, { foreignKey: 'provinceId', targetKey: 'keyMap', as: 'provinceData' })
+            doctor_infor.belongsTo(models.Allcode, { foreignKey: 'paymentId', targetKey: 'keyMap', as: 'paymentData' })
+
         }
     };
 
@@ -28,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
         sequelize,
         //modelName: Tên của mô hình là doctor_infor
         modelName: 'doctor_infor',
+        freezeTableName: true,
     });
     return doctor_infor; // Xuất mô hình doctor_infor 
 };

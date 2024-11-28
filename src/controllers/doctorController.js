@@ -71,6 +71,7 @@ let getDetailDoctorById = async (req, res) => {
 
         if (req.query.id) {
             let response = await doctorService.getDetailDoctorByIdService(req.query.id)
+            // console.log('getDetailDoctorById', response)
             return res.status(200).json(response)
         }
     } catch (e) {

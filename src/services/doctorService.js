@@ -60,37 +60,68 @@ let getAllDoctorService = async () => {
 }
 
 let saveDetailInforDoctor = async (data) => {
-    // console.log('saveDetailInforDoctor', data)
     try {
-        if (!data.hasOldData && data.doctorId && data.contentHTML && data.contentMarkdown && data.description) {
-            await db.Markdown.create({
-                contentHTML: data.contentHTML,
-                contentMarkdown: data.contentMarkdown,
-                description: data.description,
-                doctorId: data.doctorId,
-                specialtyId: data.specialtyId,
-                clinicId: data.clinicId
-            })
-            return ({
-                errCode: 0,
-                errMessage: 'Bổ sung thông tin thành công'
-            })
-        }
-        if (data.hasOldData && data.doctorId && data.contentHTML && data.contentMarkdown && data.description) {
-            let doctor = await db.Markdown.findOne({
-                where: {
+        if (!data.hasOldData) {
+            if (data.doctorId) {
+                await db.Markdown.create({
+                    contentHTML: data.contentHTML,
+                    contentMarkdown: data.contentMarkdown,
+                    description: data.description,
                     doctorId: data.doctorId,
-                },
-                raw: false // phải để raw là false thì mới đưa dữ liệu về kiểu object của sequelize thay vì object thông thường
-            })
-            if (doctor) {
-                // console.log('Instance of Model:', doctor instanceof db.Markdown); // Kiểm tra xem doctor có phải instance không
-                doctor.contentHTML = data.contentHTML;
-                doctor.contentMarkdown = data.contentMarkdown;
-                doctor.description = data.description;
-                // doctor.specialtyId = data.specialtyId;
-                // doctor.clinicId = data.clinicId;
-                await doctor.save();
+                    specialtyId: data.specialtyId,
+                    clinicId: data.clinicId
+                })
+                await db.doctor_infor.create({
+                    doctorId: data.doctorId,
+                    priceId: data.selectPrice,
+                    provinceId: data.selectProvince,
+                    paymentId: data.selectPayment,
+                    nameClinic: data.nameClinic,
+                    addressClinic: data.addressClinic,
+                    note: data.note,
+                    historyText: data.historyText,
+                })
+                return ({
+                    errCode: 0,
+                    errMessage: 'Bổ sung thông tin thành công'
+                })
+            }
+        }
+
+        if (data.hasOldData) {
+            if (data.doctorId) {
+                let doctor = await db.Markdown.findOne({
+                    where: {
+                        doctorId: data.doctorId,
+                    },
+                    raw: false // phải để raw là false thì mới đưa dữ liệu về kiểu object của sequelize thay vì object thông thường
+                })
+                if (doctor) {
+                    // console.log('Instance of Model:', doctor instanceof db.Markdown); // Kiểm tra xem doctor có phải instance không
+                    doctor.contentHTML = data.contentHTML;
+                    doctor.contentMarkdown = data.contentMarkdown;
+                    doctor.description = data.description;
+                    await doctor.save();
+                }
+
+                let doctorInfor = await db.doctor_infor.findOne({
+                    where: {
+                        doctorId: data.doctorId,
+                    },
+                    raw: false // Để raw là false để đối tượng trả về là một instance của Sequelize Model // phải để raw là false thì mới đưa dữ liệu về kiểu object của sequelize thay vì object thông thường
+                })
+                console.log(doctorInfor)
+                if (doctorInfor) {
+                    doctorInfor.doctorId = data.doctorId;
+                    doctorInfor.priceId = data.selectPrice.value;
+                    doctorInfor.provinceId = data.selectProvince;
+                    doctorInfor.paymentId = data.selectPayment;
+                    doctorInfor.nameClinic = data.nameClinic;
+                    doctorInfor.addressClinic = data.addressClinic;
+                    doctorInfor.note = data.note;
+                    doctorInfor.historyText = data.historyText;
+                    await doctorInfor.save();
+                }
                 return ({
                     errCode: 1,
                     errMessage: 'Cập nhật thành công'
@@ -140,12 +171,34 @@ let getDetailDoctorByIdService = async (id) => {
                     exclude: ['password'] // không lấy trường password
                 },
                 include: [ //inclue để kêt hợp các bảng có quan hệ với bảng User
+
+                    //bảng Markdown có quan hệ với bảng User
                     {
-                        model: db.Markdown, attributes: { //bảng Markdown có quan hệ với bảng User
-                            exclude: ['specialtyId', 'clinicId', 'createdAt', 'updatedAt']
+                        model: db.Markdown,
+                        attributes: {
+                            // exclude: ['specialtyId', 'clinicId', 'createdAt', 'updatedAt']
                         }
                     },
-                    { model: db.Allcode, as: 'doctorData' } //bảng Allcode có quan hệ với bảng User
+
+                    //bảng Allcode có quan hệ với bảng User
+                    {
+                        model: db.Allcode,
+                        as: 'doctorData',
+                        attributes: ['valueEn', 'valueVi'],
+                    },
+                    {
+                        model: db.doctor_infor,
+                        attributes: {
+                            exclude: ['id', 'doctorId'] // trường không lấy
+                        },
+                        as: 'doctorInfor',
+                        include: [
+                            { model: db.Allcode, as: 'priceData', attributes: ['valueEn', 'valueVi'] },
+                            { model: db.Allcode, as: 'provinceData', attributes: ['valueEn', 'valueVi'] },
+                            { model: db.Allcode, as: 'paymentData', attributes: ['valueEn', 'valueVi'] },
+
+                        ]
+                    },
                 ],
                 raw: true,
                 nest: true,
