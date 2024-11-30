@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
         sequelize,
         //modelName: Tên của mô hình là doctor_infor
         modelName: 'doctor_infor',
-        freezeTableName: true,
+        freezeTableName: true, //sẽ trả ra modelName có tên chính xác như modelName bên trên
     });
     return doctor_infor; // Xuất mô hình doctor_infor 
 };

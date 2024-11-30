@@ -50,6 +50,7 @@ let postInforDoctor = async (req, res) => {
         // }
         if (req.body) {
             let response = await doctorService.saveDetailInforDoctor(req.body);
+            // console.log('postInforDoctor', response)
             return res.status(200).json(response)
         } else {
             return res.status(200).json({
@@ -71,7 +72,7 @@ let getDetailDoctorById = async (req, res) => {
 
         if (req.query.id) {
             let response = await doctorService.getDetailDoctorByIdService(req.query.id)
-            // console.log('getDetailDoctorById', response)
+            console.log('getDetailDoctorById doctorController', response)
             return res.status(200).json(response)
         }
     } catch (e) {
@@ -101,8 +102,6 @@ let bulkCreateSchedule = async (req, res) => {
 }
 
 let getScheduleDoctorById = async (req, res) => {
-    // console.log(req.query.doctorId)
-    // console.log(req.query.date)
     try {
         // console.log(req.body)
         if (!req.query.doctorId || !req.query.date) {
@@ -126,6 +125,31 @@ let getScheduleDoctorById = async (req, res) => {
     }
 }
 
+
+// let getExtraInforDoctorById = async (req, res) => {
+//     try {
+//         if (!req.query.doctorId) {
+//             return res.status(200).json({
+//                 errcode: 1,
+//                 errMessage: 'Error from server'
+//             })
+//         } else {
+//             let response = await doctorService.getExtraInforDoctorById(req.query.doctorId)
+//             if (response && response.errCode === 0) {
+//                 console.log(response)
+//                 return res.status(200).json(response)
+//             }
+//         }
+
+//     } catch (e) {
+//         console.log(e)
+//         return res.status(200).json({
+//             errcode: -1,
+//             errMessage: 'Error from server getExtraInforDoctorById'
+//         })
+//     }
+// }
+
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctor: getAllDoctor,
@@ -133,4 +157,5 @@ module.exports = {
     getDetailDoctorById: getDetailDoctorById,
     bulkCreateSchedule: bulkCreateSchedule,
     getScheduleDoctorById: getScheduleDoctorById,
+    // getExtraInforDoctorById: getExtraInforDoctorById,
 }
