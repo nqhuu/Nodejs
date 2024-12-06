@@ -15,9 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     // Phương thức init được sử dụng để khởi tạo mô hình User với các thuộc tính và tùy chọn.
     Booking.init({
         statusId: DataTypes.STRING,
-        docterId: DataTypes.INTEGER,
+        doctorId: DataTypes.INTEGER,
         patientId: DataTypes.INTEGER,
-        date: DataTypes.DATE,
+        date: DataTypes.STRING,
         timeType: DataTypes.STRING,
     }, {
         // Đối tượng sequelize được truyền vào để liên kết mô hình này với kết nối cơ sở dữ liệu.

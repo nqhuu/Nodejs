@@ -72,7 +72,7 @@ let getDetailDoctorById = async (req, res) => {
 
         if (req.query.id) {
             let response = await doctorService.getDetailDoctorByIdService(req.query.id)
-            console.log('getDetailDoctorById doctorController', response)
+            // console.log('getDetailDoctorById doctorController', response)
             return res.status(200).json(response)
         }
     } catch (e) {
@@ -103,7 +103,7 @@ let bulkCreateSchedule = async (req, res) => {
 
 let getScheduleDoctorById = async (req, res) => {
     try {
-        // console.log(req.body)
+        console.log(req.body)
         if (!req.query.doctorId || !req.query.date) {
             return res.status(200).json({
                 errcode: 1,
