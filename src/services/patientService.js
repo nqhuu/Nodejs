@@ -6,7 +6,6 @@ require('dotenv').config();
 
 let postBookAppointment = async (data) => {
     try {
-        console.log('postBookAppointment service', data)
         if (!data.email || !data.doctorId || !data.timeType || !data.date) {
             return ({
                 errCode: 1,
@@ -24,7 +23,7 @@ let postBookAppointment = async (data) => {
                 }
             })
 
-            console.log(' data user[0]', user[0])
+            // console.log(' data user[0]', user[0])
             if (user && user[0]) {
                 await db.Booking.findOrCreate({
                     where: { patientId: user[0].id },
@@ -37,14 +36,13 @@ let postBookAppointment = async (data) => {
                     }
                 })
             }
+            console.log('user', user)
 
             return ({
                 errCode: 0,
-                errMessage: 'access'
+                errMessage: 'Đã tạo lich hẹn thành công, chờ xác nhận từ bác sĩ'
             })
         }
-
-
     } catch (e) {
         console.log(e);
 

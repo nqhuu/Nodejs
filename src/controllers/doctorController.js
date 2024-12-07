@@ -103,7 +103,6 @@ let bulkCreateSchedule = async (req, res) => {
 
 let getScheduleDoctorById = async (req, res) => {
     try {
-        console.log(req.body)
         if (!req.query.doctorId || !req.query.date) {
             return res.status(200).json({
                 errcode: 1,
