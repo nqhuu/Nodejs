@@ -3,7 +3,7 @@ require('dotenv').config();
 import nodemailer from 'nodemailer';
 
 let sendSimpleEmail = async (dataSend) => {
-    console.log('dataSend', dataSend)
+    // console.log('dataSend', dataSend)
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 465,
@@ -13,6 +13,7 @@ let sendSimpleEmail = async (dataSend) => {
             pass: process.env.EMAIL_APP_PASSWORD,
         },
     });
+
 
     // async..await is not allowed in global scope, must use a wrapper
     // send mail with defined transport object
@@ -24,10 +25,13 @@ let sendSimpleEmail = async (dataSend) => {
         html:
             `
             <h3>Xin chào: ${dataSend.patientName}</h3>
-            <p>Đây là email tự động được gửi từ HPG support.</p>
+            <p>Đây là email tự động được gửi từ HPG-Support.</p>
             <p>Thông tin đặt lịch khám bệnh tại hpgsupport.com.vn</p>
-            <div>Thời gian: </div>
-            <div><a href="${dataSend.redirectLink}">Click here</a></div>
+            <p>Quý khách vui lòng kiểm tra lại thông tin, nếu chính xác thì xác nhận đặt lịch bằng cách click vào đường link bên dưới</p>
+            <div><b>Thời gian: ${dataSend.time}</b></div>
+            <div><b>${dataSend.doctorData}: ${dataSend.fullNameDoctor}</b></div>   
+            <div><a href="${dataSend.redirectLink} target="_blank">Click here</a></div>
+            <p>Rấ hân hạnh được phục vụ quý khách !</p>
             `, // html body
     });
 }
