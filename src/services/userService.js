@@ -307,7 +307,7 @@ let updateUserData = async (data) => {
         let userId = await data.id
         let user = await db.User.findOne({
             where: { id: userId },
-            raw: false
+            raw: false // để sequelize trả về kiểu sequelize obj chứ không phải obj thông thường, khi đó mới thực hiện update đưuọc dữ liệu vào db thông qua sequelize
         })
         // console.log(user)
         // console.log(data)
