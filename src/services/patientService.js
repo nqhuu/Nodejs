@@ -110,13 +110,13 @@ let postVerifyBookAppointmentService = async (data) => {
             // await appointment.save();
             await appointment.save();
             return ({
-                arrCode: 0,
-                errMessage: 'Đăng ký lịch thành công'
+                errCode: 0,
+                errMessage: 'Đăng ký lịch thành công !'
             })
         } else {
             return ({
                 arrCode: 2,
-                errMessage: 'bạn đã đăng ký trước đó hoặc mã này không tồn tại'
+                errMessage: 'bạn đã đăng ký khám trong ngày này từ trước đó hoặc đường dẫn không tồn tại.'
             })
         }
     }

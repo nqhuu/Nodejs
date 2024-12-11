@@ -26,15 +26,13 @@ let postBookAppointment = async (req, res) => {
 let postVerifyBookAppointment = async (req, res) => {
     // console.log(req.query)
     try {
-        if (!req.query || !req.query.doctorId || !req.query.token) {
-            // if (req.query.token) {
+        if (!req.body || !req.body.doctorId || !req.body.token) {
             return res.status(200).json({
                 errCode: 1,
                 errMessage: 'Error from server postVerifyBookAppointment controller doctorId token'
             })
         } else {
-            let response = await patientService.postVerifyBookAppointmentService(req.query)
-            console.log(response)
+            let response = await patientService.postVerifyBookAppointmentService(req.body)
             return res.status(200).json(response)
         }
 
