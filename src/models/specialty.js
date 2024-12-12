@@ -15,8 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     // Phương thức init được sử dụng để khởi tạo mô hình Specialty với các thuộc tính và tùy chọn.
     Specialty.init({
         name: DataTypes.STRING,
-        description: DataTypes.TEXT,
-        image: DataTypes.STRING,
+        descriptionMarkdown: DataTypes.TEXT,
+        descriptionHTML: DataTypes.TEXT,
+        image: DataTypes.TEXT,
     }, {
         // Đối tượng sequelize được truyền vào để liên kết mô hình này với kết nối cơ sở dữ liệu.
         sequelize,
