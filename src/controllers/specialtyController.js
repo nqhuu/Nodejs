@@ -27,6 +27,23 @@ let createSpecialty = async (req, res) => {
     }
 }
 
+let getAllSpecialty = async (req, res) => {
+    let limit = req.query.limit;
+    if (!limit) limit = 50;
+    try {
+        let response = await specialtyService.getAllSpecialtyService(+limit)
+        return res.status(200).json(response)
+    } catch (e) {
+        console.log(e);
+        return res.status(200).json({
+            errCode: -1,
+            message: 'error from server'
+        })
+    }
+}
+
+
 module.exports = {
     createSpecialty: createSpecialty,
+    getAllSpecialty: getAllSpecialty,
 }

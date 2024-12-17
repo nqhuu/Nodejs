@@ -29,7 +29,7 @@ let createSpecialtyService = async (data) => {
             }
         })
 
-        console.log(response, status)
+        // console.log(response, status)
         return ({
             errCode: 0,
             errMessage: "Tạo Chuyên khoa thành công",
@@ -39,6 +39,22 @@ let createSpecialtyService = async (data) => {
     }
 }
 
+let getAllSpecialtyService = async (limit) => {
+    try {
+        let specialty = await db.Specialty.findAll({
+            limit: limit,
+        })
+
+        return ({
+            errCode: 0,
+            data: specialty
+        })
+    } catch (e) {
+        reject(e);
+    }
+}
+
 module.exports = {
     createSpecialtyService: createSpecialtyService,
+    getAllSpecialtyService: getAllSpecialtyService,
 }

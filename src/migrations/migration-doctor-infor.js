@@ -8,6 +8,14 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: false
             },
+            specialtyId: {
+                type: Sequelize.INTEGER,
+                allowNull: false
+            },
+            clinicId: {
+                type: Sequelize.INTEGER,
+                allowNull: false
+            },
             priceId: {
                 type: Sequelize.STRING,
                 allowNull: false

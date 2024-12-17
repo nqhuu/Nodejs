@@ -63,12 +63,6 @@ let getAllDoctorService = async () => {
 // CREATE - UPDATE DOCTOR DETAIL
 let saveDetailInforDoctor = async (data) => {
     try {
-        // if (!data.hasOldData) {
-        // if (data.doctorId) {
-
-        // };
-        // };
-        // if (data.hasOldData) {
         if (data.doctorId) {
             let doctor = await db.Markdown.findOne({
                 where: {
@@ -89,7 +83,7 @@ let saveDetailInforDoctor = async (data) => {
                     description: data.description,
                     doctorId: data.doctorId,
                     specialtyId: data.specialtyId,
-                    clinicId: data.clinicId
+
                 });
             }
 
@@ -113,6 +107,8 @@ let saveDetailInforDoctor = async (data) => {
                 doctorInfor.addressClinic = data.addressClinic;
                 doctorInfor.note = data.note;
                 doctorInfor.historyText = data.historyText;
+                doctorInfor.specialtyId = data.specialtyId;
+                doctorInfor.clinicId = data.clinicId;
                 await doctorInfor.save();
             } else {
                 await db.doctor_infor.create({
@@ -122,6 +118,8 @@ let saveDetailInforDoctor = async (data) => {
                     paymentId: data.selectPayment,
                     nameClinic: data.nameClinic,
                     addressClinic: data.addressClinic,
+                    specialtyId: data.specialtyId,
+                    clinicId: data.clinicId,
                     note: data.note,
                     historyText: data.historyText,
                 });

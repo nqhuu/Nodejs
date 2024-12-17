@@ -26,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
         paymentId: DataTypes.STRING,
         addressClinic: DataTypes.STRING,
         nameClinic: DataTypes.STRING,
+        specialtyId: DataTypes.INTEGER,
+        clinicId: DataTypes.INTEGER,
         note: DataTypes.STRING,
         count: DataTypes.INTEGER,
 
