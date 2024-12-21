@@ -102,6 +102,7 @@ let bulkCreateSchedule = async (req, res) => {
 }
 
 let getScheduleDoctorById = async (req, res) => {
+    // console.log('getScheduleDoctorById db', req.query.doctorId, req.query.date)
     try {
         if (!req.query.doctorId || !req.query.date) {
             return res.status(200).json({
@@ -125,7 +126,33 @@ let getScheduleDoctorById = async (req, res) => {
 }
 
 
+let getProfileDoctorById = async (req, res) => {
+    console.log('getProfileDoctorById', req.query)
+    try {
+        if (!req.query) {
+            return res.status(200).json({
+                errcode: 1,
+                errMessage: 'Error from server'
+            })
+        } else {
+            let response = await doctorService.getProfileDoctorById(req.query.doctorId)
+            if (response && response.errCode === 0) {
+                console.log(response)
+                return res.status(200).json(response)
+            }
+        }
+
+    } catch (e) {
+        console.log(e)
+        return res.status(200).json({
+            errcode: -1,
+            errMessage: 'Error from server getExtraInforDoctorById'
+        })
+    }
+}
+
 // let getExtraInforDoctorById = async (req, res) => {
+
 //     try {
 //         if (!req.query.doctorId) {
 //             return res.status(200).json({
@@ -157,4 +184,5 @@ module.exports = {
     bulkCreateSchedule: bulkCreateSchedule,
     getScheduleDoctorById: getScheduleDoctorById,
     // getExtraInforDoctorById: getExtraInforDoctorById,
+    getProfileDoctorById: getProfileDoctorById,
 }

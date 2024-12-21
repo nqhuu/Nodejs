@@ -14,7 +14,7 @@ let getTopDoctorHomeService = (limit) => {
             let users = await db.User.findAll({
                 limit: limit,
                 where: {
-                    positionId: 'P0'
+                    roleId: 'R2'
                 },
                 orderL: [['createdAt', 'DESC']],
                 attributes: {
@@ -270,7 +270,6 @@ let bulkCreateSchedule = async (data) => {
 }
 
 let getScheduleDoctorById = async (doctorId, date) => {
-    // console.log('getScheduleDoctorById service', doctorId, date)
     try {
         let scheduleDoctor = await db.Schedule.findAll({
             where: {
@@ -290,6 +289,32 @@ let getScheduleDoctorById = async (doctorId, date) => {
             errCode: 0,
             data: scheduleDoctor
         })
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+let getProfileDoctorById = async (doctorId) => {
+    try {
+        let doctorInfor = await db.doctor_infor.findOne({
+            where: {
+                doctorId: doctorId,
+            },
+            include: [
+                { model: db.Allcode, as: 'priceData', attributes: ['valueEn', 'valueVi'] },
+                { model: db.Allcode, as: 'provinceData', attributes: ['valueEn', 'valueVi'] },
+                { model: db.Allcode, as: 'paymentData', attributes: ['valueEn', 'valueVi'] },
+
+            ],
+            raw: true,
+            nest: true
+        })
+        // console.log('getScheduleDoctorByIdService', doctorInfor)
+        return ({
+            errCode: 0,
+            data: doctorInfor
+        })
+
     } catch (e) {
         console.log(e);
     }
@@ -323,6 +348,7 @@ let getScheduleDoctorById = async (doctorId, date) => {
 // }
 
 
+
 module.exports = {
     getTopDoctorHomeService: getTopDoctorHomeService,
     getAllDoctorService: getAllDoctorService,
@@ -332,4 +358,5 @@ module.exports = {
     bulkCreateSchedule: bulkCreateSchedule,
     getScheduleDoctorById: getScheduleDoctorById,
     // getExtraInforDoctorById: getExtraInforDoctorById,
+    getProfileDoctorById: getProfileDoctorById,
 }
