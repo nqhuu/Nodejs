@@ -127,7 +127,6 @@ let getScheduleDoctorById = async (req, res) => {
 
 
 let getProfileDoctorById = async (req, res) => {
-    console.log('getProfileDoctorById', req.query)
     try {
         if (!req.query) {
             return res.status(200).json({
@@ -137,7 +136,6 @@ let getProfileDoctorById = async (req, res) => {
         } else {
             let response = await doctorService.getProfileDoctorById(req.query.doctorId)
             if (response && response.errCode === 0) {
-                console.log(response)
                 return res.status(200).json(response)
             }
         }
@@ -150,6 +148,7 @@ let getProfileDoctorById = async (req, res) => {
         })
     }
 }
+
 
 // let getExtraInforDoctorById = async (req, res) => {
 
