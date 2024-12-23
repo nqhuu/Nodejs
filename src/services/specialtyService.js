@@ -1,6 +1,6 @@
 import { where } from "sequelize";
 import db from "../models";
-import { defaultTo, includes } from "lodash";
+import { defaultTo, includes, _ } from "lodash";
 import emailService from './emailService'
 require('dotenv').config();
 import moment from 'moment'; // format date
@@ -58,51 +58,55 @@ let getAllSpecialtyService = async (limit) => {
 let getDetailSpecialtyById = async (id, location) => {
     try {
         let specialtyAndDotor = {};
-        let queryOptions = {
-            where: {
-                id: id,
-            },
-            attributes: ['descriptionMarkdown', 'descriptionHTML'],
-            include: [
-                {
-                    model: db.doctor_infor,
-                    attributes: ['doctorId', 'provinceId'],
-                    as: 'specialtyData',
-                    ...(location !== 'ALL' && { where: { provinceId: location } }) // Điều kiện động cho where, nếu location khác "ALL" sử dụng where
-                },
-            ],
-            raw: true,
-            nest: true
-        };
+        // let queryOptions = {
+        //     where: { id: id },
+        //     attributes: ['descriptionMarkdown', 'descriptionHTML'],
+        //     include: [
+        //         {
+        //             model: db.doctor_infor,
+        //             attributes: ['doctorId', 'provinceId'],
+        //             as: 'specialtyData',
+        //             ...(location !== 'ALL' && { where: { provinceId: location } }), // Điều kiện động cho where, nếu location khác "ALL" sử dụng where
+        //             required: true, // Đảm bảo lấy tất cả các bản ghi liên quan
+        //         },
+        //     ],
+        //     raw: true,
+        //     nest: true
+        // };
 
-        // if (location === 'ALL') {
-        //     queryOptions.include = [ //include để kêt hợp các bảng có quan hệ với bảng doctor_infor
-        //         {
-        //             model: db.doctor_infor,
-        //             attributes: ['doctorId', 'provinceId'],
-        //             as: 'specialtyData'
-        //         },
-        //     ]
-        // } else {
-        //     queryOptions.include = [ //include để kêt hợp các bảng có quan hệ với bảng doctor_infor
-        //         {
-        //             model: db.doctor_infor,
-        //             where: { provinceId: location },
-        //             attributes: ['doctorId', 'provinceId'],
-        //             as: 'specialtyData'
-        //         },
-        //     ]
-        // }
-        specialtyAndDotor = await db.Specialty.findOne(queryOptions)
-        if (!specialtyAndDotor) {
-            throw new Error("No data found for the given query");
-        } else {
+        let specialty = await db.Specialty.findOne({
+            where: { id: id },
+            attributes: ['descriptionMarkdown', 'descriptionHTML'],
+        })
+
+        let doctorInSpecialty = {};
+        if (_.isEmpty(specialty)) {
             return ({
-                errCode: 0,
-                errMessage: 'ok',
-                data: specialtyAndDotor
+                errCode: 2,
+                errMessage: 'Không tồn tại chuyên khoa',
+            })
+        } else {
+            doctorInSpecialty = await db.doctor_infor.findAll({
+                where: {
+                    specialtyId: id,
+                    ...(location !== 'ALL' && { provinceId: location }),
+                },
+                attributes: ['doctorId', 'provinceId'],
+                as: 'specialtyData',
             })
         }
+
+
+        if (specialty && doctorInSpecialty && !_.isEmpty(specialty)) {
+            specialtyAndDotor.specialty = specialty;
+            specialtyAndDotor.doctorInSpecialty = doctorInSpecialty;
+        }
+
+        return ({
+            errCode: 0,
+            errMessage: 'ok',
+            data: specialtyAndDotor
+        })
 
     } catch (e) {
         console.log(e)
