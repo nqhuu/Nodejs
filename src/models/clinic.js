@@ -16,8 +16,9 @@ module.exports = (sequelize, DataTypes) => {
     Clinic.init({
         name: DataTypes.STRING,
         address: DataTypes.STRING,
-        description: DataTypes.STRING,
-        image: DataTypes.STRING,
+        descriptionMarkdown: DataTypes.TEXT,
+        descriptionHTML: DataTypes.TEXT,
+        image: DataTypes.TEXT,
     }, {
         // Đối tượng sequelize được truyền vào để liên kết mô hình này với kết nối cơ sở dữ liệu.
         sequelize,
