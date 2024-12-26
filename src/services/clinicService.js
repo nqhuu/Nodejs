@@ -40,6 +40,71 @@ let createClinicService = async (data) => {
 }
 
 
+
+let getAllClinicService = async (limit) => {
+    try {
+        let specialty = await db.Clinic.findAll({
+            limit: limit,
+        })
+
+        return ({
+            errCode: 0,
+            data: specialty
+        })
+    } catch (e) {
+        reject(e);
+    }
+}
+
+let getDetailClinicById = async (id) => {
+    try {
+        let ClinicById = {};
+        let doctorInClinic = {};
+        let doctorAndClinic = {}
+        ClinicById = await db.Clinic.findOne({
+            where: { id: id },
+            // attributes: ['descriptionMarkdown', 'descriptionHTML'],
+        })
+
+        if (_.isEmpty(ClinicById)) {
+            return ({
+                errCode: 2,
+                errMessage: 'Không tồn tại chuyên khoa',
+            })
+        } else {
+            doctorInClinic = await db.doctor_infor.findAll({
+                where: {
+                    clinicId: id,
+                    // ...(location !== 'ALL' && { provinceId: location }),
+                },
+                attributes: ['doctorId'],
+                // as: 'ClinicData',
+            })
+        }
+
+
+        if (ClinicById && doctorInClinic && !_.isEmpty(ClinicById)) {
+            doctorAndClinic.clinic = ClinicById;
+            doctorAndClinic.doctorInClinic = doctorInClinic;
+        }
+
+        return ({
+            errCode: 0,
+            errMessage: 'ok',
+            data: doctorAndClinic
+        })
+
+    } catch (e) {
+        console.log(e)
+        return ({
+            errCode: 2,
+            errMessage: 'Error from server: getDetailClinicById service'
+        })
+    }
+}
+
 module.exports = {
     createClinicService: createClinicService,
+    getAllClinicService: getAllClinicService,
+    getDetailClinicById: getDetailClinicById
 }
