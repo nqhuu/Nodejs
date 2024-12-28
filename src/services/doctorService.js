@@ -309,7 +309,6 @@ let getProfileDoctorById = async (doctorId) => {
             raw: true,
             nest: true
         })
-        // console.log('getScheduleDoctorByIdService', doctorInfor)
         return ({
             errCode: 0,
             data: doctorInfor
@@ -320,16 +319,23 @@ let getProfileDoctorById = async (doctorId) => {
     }
 }
 
-let getListPatientForDoctor = async (data) => {
+let getListPatientForDoctor = async (doctorId, date, patientId) => {
+    console.log(doctorId, date, patientId)
     try {
         let doctorInfor = await db.Booking.findAll({
             where: {
-                doctorId: data.doctorId,
-                patientId: data.patientId,
-                date: data.date,
+                doctorId: doctorId,
+                date: date,
+                ...(patientId && { patientId: patientId }),
                 statusId: 'S2'
             },
             include: [
+
+                {
+                    model: db.Allcode,
+                    as: 'timeTypePatient',
+                    attributes: ['valueEn', 'valueVi']
+                },
                 {
                     model: db.User,
                     as: 'bookingData',
@@ -345,7 +351,6 @@ let getListPatientForDoctor = async (data) => {
             raw: true,
             nest: true
         })
-        // console.log('getScheduleDoctorByIdService', doctorInfor)
         return ({
             errCode: 0,
             data: doctorInfor

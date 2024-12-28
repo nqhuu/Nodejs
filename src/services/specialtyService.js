@@ -29,7 +29,6 @@ let createSpecialtyService = async (data) => {
             }
         })
 
-        // console.log(response, status)
         return ({
             errCode: 0,
             errMessage: "Tạo Chuyên khoa thành công",

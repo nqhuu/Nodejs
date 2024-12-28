@@ -34,20 +34,6 @@ let getAllDoctor = async (req, res) => {
 
 let postInforDoctor = async (req, res) => {
     try {
-        // let idDoctor = req.body.doctorId;
-        // let AllDr = await doctorService.getAllInforDoctorService()
-        // let idAllDoctor = AllDr.data.map((item, index) => {
-        //     return item.doctorId
-        // })
-        // if (req.body && !idAllDoctor.includes(idDoctor)) {
-        //     let response = await doctorService.saveDetailInforDoctor(req.body);
-        //     return res.status(200).json(response)
-        // } else {
-        //     return res.status(200).json({
-        //         errCode: -2,
-        //         errMessage: 'Thông tin bác sĩ đã được tạo trước đó, bạn cần update nếu muốn chỉnh sửa lại thông tin bác sĩ'
-        //     })
-        // }
         if (req.body) {
             let response = await doctorService.saveDetailInforDoctor(req.body);
             // console.log('postInforDoctor', response)
@@ -152,13 +138,13 @@ let getProfileDoctorById = async (req, res) => {
 
 let getListPatientForDoctor = async (req, res) => {
     try {
-        if (!req.body) {
+        if (!req.query) {
             return res.status(200).json({
                 errcode: 1,
                 errMessage: 'Error from getListPatientForDoctor server'
             })
         } else {
-            let response = await doctorService.getListPatientForDoctor(req.body)
+            let response = await doctorService.getListPatientForDoctor(req.query.doctorId, req.query.date, req.query.patientId)
             if (response && response.errCode === 0) {
                 return res.status(200).json(response)
             }
@@ -168,12 +154,33 @@ let getListPatientForDoctor = async (req, res) => {
         console.log(e)
         return res.status(200).json({
             errcode: -1,
-            errMessage: 'Error from server getExtraInforDoctorById'
+            errMessage: 'Error from server getListPatientForDoctor'
         })
     }
 }
 
+let getAllPatientForDoctor = async (req, res) => {
+    try {
+        if (!req.query) {
+            return res.status(200).json({
+                errcode: 1,
+                errMessage: 'Error from getAllPatientForDoctor server'
+            })
+        } else {
+            let response = await doctorService.getListPatientForDoctor(req.query.doctorId, req.query.date)
+            if (response && response.errCode === 0) {
+                return res.status(200).json(response)
+            }
+        }
 
+    } catch (e) {
+        console.log(e)
+        return res.status(200).json({
+            errcode: -1,
+            errMessage: 'Error from server getAllPatientForDoctor'
+        })
+    }
+}
 
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
@@ -185,4 +192,5 @@ module.exports = {
     // getExtraInforDoctorById: getExtraInforDoctorById,
     getProfileDoctorById: getProfileDoctorById,
     getListPatientForDoctor: getListPatientForDoctor,
+    getAllPatientForDoctor: getAllPatientForDoctor,
 }

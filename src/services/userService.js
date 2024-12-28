@@ -36,12 +36,12 @@ let handeleUserLogin = (userEmail, password) => {
                 // findOne sẽ trả về bản ghi đầu tiên khớp với điều kiện where, hoặc null nếu không tìm thấy bản ghi nào.
                 let user = await db.User.findOne({
                     where: { email: userEmail },
-                    attributes: ['email', 'roleId', 'firstName', 'lastName', 'password'], //chỉ lấy các trường này, phải lấy thêm password để check dưới hàm if
+                    attributes: ['id', 'email', 'roleId', 'firstName', 'lastName', 'password'], //chỉ lấy các trường này, phải lấy thêm password để check dưới hàm if
                     raw: true, //Trả về kết quả dưới dạng đối tượng JavaScript thuần túy (không phải là một đối tượng phức tạp của Sequelize).
                 });
-
                 // nếu tồn tại user thì tiếp tục xử lý password
                 if (user) {
+
                     //compare password
                     let check = await bcrypt.compareSync(password, user.password); // check password được hash với thư viện bcrypt, hàm compareSync sẽ trả về true hoặc false
                     if (check) {
