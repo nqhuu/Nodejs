@@ -24,7 +24,6 @@ let postBookAppointment = async (req, res) => {
 }
 
 let postVerifyBookAppointment = async (req, res) => {
-    // console.log(req.query)
     try {
         if (!req.body || !req.body.doctorId || !req.body.token) {
             return res.status(200).json({

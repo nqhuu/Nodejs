@@ -320,33 +320,41 @@ let getProfileDoctorById = async (doctorId) => {
     }
 }
 
-// let getExtraInforDoctorById = async (doctorId) => {
-//     console.log('getExtraInforDoctorById doctorService', doctorId)
-//     try {
-//         let doctorInfor = await db.doctor_infor.findOne({
-//             where: {
-//                 doctorId: doctorId,
-//             },
-//             include: [
-//                 { model: db.Allcode, as: 'priceData', attributes: ['valueEn', 'valueVi'] },
-//                 { model: db.Allcode, as: 'provinceData', attributes: ['valueEn', 'valueVi'] },
-//                 { model: db.Allcode, as: 'paymentData', attributes: ['valueEn', 'valueVi'] },
+let getListPatientForDoctor = async (data) => {
+    try {
+        let doctorInfor = await db.Booking.findAll({
+            where: {
+                doctorId: data.doctorId,
+                patientId: data.patientId,
+                date: data.date,
+                statusId: 'S2'
+            },
+            include: [
+                {
+                    model: db.User,
+                    as: 'bookingData',
+                    attributes: {
+                        exclude: ['createdAt', 'updatedAt', 'image'] // không lấy trường ''
+                    },
+                    include: [
+                        { model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi'] }
+                    ]
 
-//             ],
-//             raw: false,
-//             nest: true
-//         })
-//         console.log(doctorInfor)
-//         return ({
-//             errCode: 0,
-//             data: doctorInfor
-//         })
+                },
+            ],
+            raw: true,
+            nest: true
+        })
+        // console.log('getScheduleDoctorByIdService', doctorInfor)
+        return ({
+            errCode: 0,
+            data: doctorInfor
+        })
 
-//     } catch (e) {
-//         console.log(e);
-//     }
-// }
-
+    } catch (e) {
+        console.log(e);
+    }
+}
 
 
 module.exports = {
@@ -359,4 +367,5 @@ module.exports = {
     getScheduleDoctorById: getScheduleDoctorById,
     // getExtraInforDoctorById: getExtraInforDoctorById,
     getProfileDoctorById: getProfileDoctorById,
+    getListPatientForDoctor: getListPatientForDoctor,
 }

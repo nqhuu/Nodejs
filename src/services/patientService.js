@@ -33,6 +33,7 @@ let postBookAppointment = async (data) => {
             })
 
         } else {
+            console.log('postBookAppointment', data)
             let token = uuidv4(); // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
             await emailService.sendSimpleEmail({ // hàm gửi mail tự động
                 reciverEmail: data.email,
@@ -56,7 +57,11 @@ let postBookAppointment = async (data) => {
                 },
                 defaults: {
                     email: data.email,
-                    roleId: 'R3'
+                    roleId: 'R3',
+                    firstName: data.fullName,
+                    address: data.address,
+                    phonenumber: data.phoneNumber,
+                    gender: data.gender
                 }
             })
 
@@ -74,11 +79,9 @@ let postBookAppointment = async (data) => {
                     }
                 })
             }
-            // console.log('user', user)
-
             return ({
                 errCode: 0,
-                errMessage: 'Đã tạo lich hẹn thành công, chờ xác nhận từ bác sĩ'
+                errMessage: 'Bạn vui lòng truy cập email để xác thực thông tin và "click" đặt lịch khám bệnh'
             })
         }
     } catch (e) {

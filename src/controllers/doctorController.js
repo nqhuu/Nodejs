@@ -150,30 +150,30 @@ let getProfileDoctorById = async (req, res) => {
 }
 
 
-// let getExtraInforDoctorById = async (req, res) => {
+let getListPatientForDoctor = async (req, res) => {
+    try {
+        if (!req.body) {
+            return res.status(200).json({
+                errcode: 1,
+                errMessage: 'Error from getListPatientForDoctor server'
+            })
+        } else {
+            let response = await doctorService.getListPatientForDoctor(req.body)
+            if (response && response.errCode === 0) {
+                return res.status(200).json(response)
+            }
+        }
 
-//     try {
-//         if (!req.query.doctorId) {
-//             return res.status(200).json({
-//                 errcode: 1,
-//                 errMessage: 'Error from server'
-//             })
-//         } else {
-//             let response = await doctorService.getExtraInforDoctorById(req.query.doctorId)
-//             if (response && response.errCode === 0) {
-//                 console.log(response)
-//                 return res.status(200).json(response)
-//             }
-//         }
+    } catch (e) {
+        console.log(e)
+        return res.status(200).json({
+            errcode: -1,
+            errMessage: 'Error from server getExtraInforDoctorById'
+        })
+    }
+}
 
-//     } catch (e) {
-//         console.log(e)
-//         return res.status(200).json({
-//             errcode: -1,
-//             errMessage: 'Error from server getExtraInforDoctorById'
-//         })
-//     }
-// }
+
 
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
@@ -184,4 +184,5 @@ module.exports = {
     getScheduleDoctorById: getScheduleDoctorById,
     // getExtraInforDoctorById: getExtraInforDoctorById,
     getProfileDoctorById: getProfileDoctorById,
+    getListPatientForDoctor: getListPatientForDoctor,
 }

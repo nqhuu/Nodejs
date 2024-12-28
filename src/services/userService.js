@@ -363,7 +363,6 @@ let updateUserData = async (data) => {
 }
 
 let getAllCodeService = (typeInput) => {
-    // console.log(typeInput)
     return new Promise(async (resolve, reject) => {
         try {
             if (!typeInput) {
@@ -382,7 +381,7 @@ let getAllCodeService = (typeInput) => {
             }
 
         } catch (e) {
-
+            console.log(e)
         }
     })
 }
