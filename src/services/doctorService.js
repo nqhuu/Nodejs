@@ -319,14 +319,13 @@ let getProfileDoctorById = async (doctorId) => {
     }
 }
 
-let getListPatientForDoctor = async (doctorId, date, patientId) => {
-    console.log(doctorId, date, patientId)
+let getListPatientForDoctor = async (doctorId, date) => {
     try {
         let doctorInfor = await db.Booking.findAll({
             where: {
                 doctorId: doctorId,
                 date: date,
-                ...(patientId && { patientId: patientId }),
+                // ...(patientId && { patientId: patientId }),
                 statusId: 'S2'
             },
             include: [
@@ -351,6 +350,7 @@ let getListPatientForDoctor = async (doctorId, date, patientId) => {
             raw: true,
             nest: true
         })
+        console.log('doctorInfor', doctorInfor)
         return ({
             errCode: 0,
             data: doctorInfor
