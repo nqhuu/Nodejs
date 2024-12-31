@@ -36,6 +36,44 @@ let sendSimpleEmail = async (dataSend) => {
     });
 }
 
+
+let sendRemedyEmail = async (dataSend) => {
+    const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true, // true for port 465, false for other ports
+        auth: {
+            user: process.env.EMAIL_APP,
+            pass: process.env.EMAIL_APP_PASSWORD,
+        },
+    });
+
+
+    // async..await is not allowed in global scope, must use a wrapper
+    // send mail with defined transport object
+    const info = await transporter.sendMail({
+        from: `"HPG-support 👻" <${process.env.EMAIL_APP}>`, // sender address
+        to: dataSend.email, // list of receivers
+        subject: "Xác nhận đặt lịch khám bệnh", // Subject line
+        // text: "Hello world?", // plain text body
+        html:
+            `
+            <p>Đây là email tự động được gửi từ HPG-Support.</p>
+          
+            `, // html body
+        attachments: [
+            {
+                filename: `${new Date().getTime()}.jpg`,
+                content: dataSend.base64.split("base64,")[1],
+                encoding: 'base64'
+            }
+        ]
+    },
+
+    );
+}
+
 module.exports = {
-    sendSimpleEmail
+    sendSimpleEmail,
+    sendRemedyEmail
 }

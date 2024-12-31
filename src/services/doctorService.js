@@ -4,6 +4,8 @@ import { raw } from "body-parser"
 import allcode from "../models/allcode"
 require('dotenv').config();
 import _, { includes } from 'lodash'
+import emailService from './emailService'
+
 
 
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE;
@@ -362,6 +364,47 @@ let getListPatientForDoctor = async (doctorId, date) => {
 }
 
 
+let sendRemedy = async (data) => {
+    try {
+        if (!data.email || !data.doctorId || !data.timeType || !data.date || !data.patientId
+            || !data.base64
+        ) {
+            return ({
+                errCode: 1,
+                errMessage: 'Error from server sendRemedy service'
+            })
+        }
+        else {
+            let user = await db.Booking.findOne({
+                where: {
+                    doctorId: data.doctorId,
+                    patientId: data.patientId,
+                    date: data.date,
+                    timeType: data.timeType,
+                    statusId: data.statusId
+                },
+                raw: false
+            })
+
+            if (user) {
+                user.statusId = 'S3'
+                await user.save();
+            }
+            await emailService.sendRemedyEmail(data) // hàm gửi mail tự động
+
+            return ({
+                errCode: 0,
+                errMessage: 'Gửi email thành công'
+            })
+        }
+    } catch (e) {
+        console.log(e);
+
+    }
+}
+
+
+
 module.exports = {
     getTopDoctorHomeService: getTopDoctorHomeService,
     getAllDoctorService: getAllDoctorService,
@@ -373,4 +416,5 @@ module.exports = {
     // getExtraInforDoctorById: getExtraInforDoctorById,
     getProfileDoctorById: getProfileDoctorById,
     getListPatientForDoctor: getListPatientForDoctor,
+    sendRemedy: sendRemedy
 }

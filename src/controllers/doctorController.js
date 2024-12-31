@@ -159,6 +159,29 @@ let getListPatientForDoctor = async (req, res) => {
     }
 }
 
+let sendRemedy = async (req, res) => {
+    try {
+        if (!req.body) {
+            return res.status(200).json({
+                errcode: 1,
+                errMessage: 'Error from sendRemedy server'
+            })
+        } else {
+            let response = await doctorService.sendRemedy(req.body)
+            if (response && response.errCode === 0) {
+                return res.status(200).json(response)
+            }
+        }
+
+    } catch (e) {
+        console.log(e)
+        return res.status(200).json({
+            errcode: -1,
+            errMessage: 'Error from server sendRemedy'
+        })
+    }
+}
+
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctor: getAllDoctor,
@@ -168,4 +191,5 @@ module.exports = {
     getScheduleDoctorById: getScheduleDoctorById,
     getProfileDoctorById: getProfileDoctorById,
     getListPatientForDoctor: getListPatientForDoctor,
+    sendRemedy: sendRemedy,
 }
