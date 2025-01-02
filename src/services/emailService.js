@@ -67,6 +67,10 @@ let sendRemedyEmail = async (dataSend) => {
                 content: dataSend.base64.split("base64,")[1],
                 encoding: 'base64'
             }
+            // {   // file on disk as an attachment
+            //     filename: `${new Date().getTime()}.jpg`,
+            //     path: 'C:\\Users\\Admin\\OneDrive\\Hình ảnh\\Embe.jpg' // stream this file
+            // }
         ]
     },
 

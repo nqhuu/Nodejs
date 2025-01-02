@@ -352,7 +352,7 @@ let getListPatientForDoctor = async (doctorId, date) => {
             raw: true,
             nest: true
         })
-        console.log('doctorInfor', doctorInfor)
+        // console.log('doctorInfor', doctorInfor)
         return ({
             errCode: 0,
             data: doctorInfor
